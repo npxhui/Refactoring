@@ -40,26 +40,34 @@ function usd(aNumber) {
         minimumIntegerDigits: 2}).format(aNumber / 100);
 }
 
-function statement (invoice, plays) {
-    let totalAmount = 0;
+// 提炼函数
+function totalVolumCredits()
+{
     let volumeCredits = 0;
-    let result = `Statement for ${invoice.customer}\n`;
     for (let perf of invoice.performances) {
         volumeCredits += volumeCreditsFor(perf);
+    }
+    return volumeCredits;
+}
+
+function statement (invoice, plays) {
+    let totalAmount = 0;
+    let result = `Statement for ${invoice.customer}\n`;
+    for (let perf of invoice.performances) {
 
         // print line for this order
         result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)`;
         totalAmount += amountFor(perf);
     }
     result += `Amount owed is ${usd(totalAmount)}\n`;
-    result += `You earned ${volumeCredits} credits\n`;
+    result += `You earned ${totalVolumCredits()} credits\n`; // 内联变量
     return result;
 }
 
 plays = {"hamlet": {"name": "Hamlet", "type": "tragedy"},
          "as-like": {"name": "As You Like It", "type": "comedy"},
          "othello": {"name": "Othello", "type": "tragedy"}};
-invoices = {"customer": "BigCo",
+invoice = {"customer": "BigCo",
              "performances": [{
                 "playID": "hamlet",
                 "audience": 55
@@ -72,4 +80,4 @@ invoices = {"customer": "BigCo",
                 "playID": "othello",
                 "audience": 40
             }]};
-console.log(statement(invoices, plays));
+console.log(statement(invoice, plays));
