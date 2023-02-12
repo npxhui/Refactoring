@@ -43,23 +43,31 @@ function usd(aNumber) {
 // 提炼函数
 function totalVolumCredits()
 {
-    let volumeCredits = 0;
+    let result = 0;
     for (let perf of invoice.performances) {
-        volumeCredits += volumeCreditsFor(perf);
+        result += volumeCreditsFor(perf);
     }
-    return volumeCredits;
+    return result;
+}
+
+// 提炼函数
+function totalAmount()
+{
+    let result = 0;
+    for (let perf of invoice.performances) {
+        result += amountFor(perf);
+    }
+    return result;
 }
 
 function statement (invoice, plays) {
-    let totalAmount = 0;
     let result = `Statement for ${invoice.customer}\n`;
     for (let perf of invoice.performances) {
 
         // print line for this order
         result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)`;
-        totalAmount += amountFor(perf);
     }
-    result += `Amount owed is ${usd(totalAmount)}\n`;
+    result += `Amount owed is ${usd(totalAmount())}\n`; // 内联变量
     result += `You earned ${totalVolumCredits()} credits\n`; // 内联变量
     return result;
 }
