@@ -29,26 +29,29 @@ function amountFor(aPerformance) { // aPerformance跟踪变量类型
 // 提炼函数
 function volumeCreditsFor(aPerformance) {
     let result = 0;
-    // add volume credits
     result += Math.max(aPerformance.audience - 30, 0);
-    // add extra credit for every ten comedy attendees
     if ("comedy" == playFor(aPerformance).type) result += Math.floor(aPerformance.audience / 5);
     return result;
+}
+
+// 函数变量改成函数声明
+function usd(aNumber) {
+    return new Intl.NumberFormat("en-US", {style:"currency", currency:"USD",
+        minimumIntegerDigits: 2}).format(aNumber / 100);
 }
 
 function statement (invoice, plays) {
     let totalAmount = 0;
     let volumeCredits = 0;
     let result = `Statement for ${invoice.customer}\n`;
-    const format = new Intl.NumberFormat("en-US", {style:"currency", currency:"USD", minimumIntegerDigits: 2}).format;
     for (let perf of invoice.performances) {
         volumeCredits += volumeCreditsFor(perf);
 
         // print line for this order
-        result += `${playFor(perf).name}: ${format(amountFor(perf)/100)} (${perf.audience} seats)`;
+        result += `${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)`;
         totalAmount += amountFor(perf);
     }
-    result += `Amount owed is ${format(totalAmount/100)}\n`;
+    result += `Amount owed is ${usd(totalAmount)}\n`;
     result += `You earned ${volumeCredits} credits\n`;
     return result;
 }
